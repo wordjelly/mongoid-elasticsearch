@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'mongoid/elasticsearch/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "mongoid-elasticsearch"
+  spec.name          = "wj-mongoid-elasticsearch"
   spec.version       = Mongoid::Elasticsearch::VERSION
   spec.authors       = ["glebtv"]
   spec.email         = ["glebtv@gmail.com"]
@@ -21,7 +21,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "mongoid", [">= 3.0", "< 6.0"]
   spec.add_dependency "elasticsearch", "~> 1.0.13"
   spec.add_dependency "ruby-progressbar"
-
+  spec.add_dependency 'faraday_middleware'
+  spec.add_dependency 'faraday_middleware-aws-sigv4'
+  spec.add_dependency 'patron'
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"

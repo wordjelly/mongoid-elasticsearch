@@ -50,6 +50,8 @@ module Mongoid
       def results
         return [] if failure?
         @results ||= begin
+          puts "here are the hits."
+          puts JSON.pretty_generate(hits)
           case @wrapper
           when :load
             if @multi
@@ -63,24 +65,32 @@ module Mongoid
               end
             end
           when :mash
+          
             hits.map do |h|
               s = h.delete('_source')
               m = Hashie::Mash.new(h.merge(s))
               if defined?(Moped::BSON)
                 m.id = Moped::BSON::ObjectId.from_string(h['_id'])
               else
+          
                 m.id = BSON::ObjectId.from_string(h['_id'])
               end
               m._id = m.id
               m
             end
           when :model
+          
             multi_without_load
           else
             hits
           end
 
         end
+
+
+
+      
+
       end
 
       def error
@@ -142,13 +152,41 @@ module Mongoid
         records = {}
         hits.group_by { |item| item['_type'] }.each do |type, items|
           klass = find_klass(type)
-          records[type] = klass.find(items.map { |h| h['_id'] })
+          ####################################################
+          ##
+          ##
+          ## THIS LINE REMOVED AND SUBSEQUENT BLOCK ADDED.
+          ##
+          ##
+          ####################################################
+          #records[type] = klass.find(items.map { |h| h['_id'] })
+
+          ####################################################
+          ##
+          ##
+          ##
+          ## WHOLE SUBSEQUENT BLOCK IS ADDED.
+          ##
+          ##
+          ####################################################
+          items.each do |h|
+            begin
+              records[type]||= []
+              records[type] << klass.find(h['_id'])
+            rescue => e
+              
+            end
+          end
+
         end
 
         # Reorder records to preserve the order from search results
         hits.map do |item|
-          records[item['_type']].detect do |record|
-            record.id.to_s == item['_id'].to_s
+          ### THIS LINE WAS ADDED TO CHECK IF THE TYPE EXISTS.
+          if records[item['_type']]
+            records[item['_type']].detect do |record|
+              record.id.to_s == item['_id'].to_s
+            end
           end
         end
       end

@@ -1,3 +1,7 @@
+require 'patron'
+require 'faraday_middleware'
+require 'faraday_middleware/aws_sigv4'
+
 module Mongoid
   module Elasticsearch
     class Es
@@ -10,8 +14,18 @@ module Mongoid
       end
 
       def client
-        # dup is needed because Elasticsearch::Client.new changes options hash inplace
-        @client ||= ::Elasticsearch::Client.new klass.es_client_options.dup
+        if klass.es_create_aws_client
+          @client ||= ::Elasticsearch::Client.new(host: ENV["AWS_ES_HOST"], port: ENV["AWS_ES_PORT"]) do |f|
+            f.request :aws_sigv4,
+              credentials: Aws::Credentials.new(ENV["AWS_KEY"],ENV["AWS_SECRET"]),
+              service: ENV["AWS_ES_SERVICE"],
+              region: ENV["AWS_ES_REGION"]
+            f.response :logger
+            f.adapter  Faraday.default_adapter
+          end 
+        else
+          @client ||= ::Elasticsearch::Client.new klass.es_client_options.dup
+        end
       end
 
       def index
