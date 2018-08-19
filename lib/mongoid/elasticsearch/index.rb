@@ -13,8 +13,12 @@ module Mongoid
         klass.es_index_name
       end
 
+      ## mapping names should not be specified, it will direclty use the type from here, which will default to document.
+      ## if specified, mapping name should be document.
+      ## this was modified to set the type of all documents as "document", because in newer versions elasticsearch supports only one mapping/type per index.
       def type
-        klass.model_name.collection.singularize
+        "document"
+        #klass.model_name.collection.singularize
       end
 
       def options

@@ -147,10 +147,15 @@ module Mongoid
       end
 
       def multi_with_load
+        #puts "--------------- Inside multi with load -------------"
+        #puts "returned since hits were empty."
         return [] if hits.empty?
-
+        #puts "hits not empty."
+        #type has been shorted out to be document_type
+        #type for all documents is the same and it is called 'document'
+        #so now the document_type is the actual class of the model.
         records = {}
-        hits.group_by { |item| item['_type'] }.each do |type, items|
+        hits.group_by { |item| item['_source']['document_type'] }.each do |type, items|
           klass = find_klass(type)
           ####################################################
           ##
@@ -174,7 +179,7 @@ module Mongoid
               records[type]||= []
               records[type] << klass.find(h['_id'])
             rescue => e
-              
+              puts e.to_s
             end
           end
 
@@ -183,8 +188,8 @@ module Mongoid
         # Reorder records to preserve the order from search results
         hits.map do |item|
           ### THIS LINE WAS ADDED TO CHECK IF THE TYPE EXISTS.
-          if records[item['_type']]
-            records[item['_type']].detect do |record|
+          if records[item['_source']['document_type']]
+            records[item['_source']['document_type']].detect do |record|
               record.id.to_s == item['_id'].to_s
             end
           end
@@ -193,7 +198,7 @@ module Mongoid
 
       def multi_without_load
         hits.map do |h|
-          klass = find_klass(h['_type'])
+          klass = find_klass(h['_source']['document_type'])
           h[:_highlight] = h.delete('highlight') if h.key?('highlight')
           source = h.delete('_source')
           if defined?(Moped::BSON)

@@ -79,6 +79,7 @@ module Mongoid
         search({body: {query: {match_all: {}}}}, options)
       end
 
+
       def options_for(obj)
         {id: obj.id.to_s}.merge type_options
       end
