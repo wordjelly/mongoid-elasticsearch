@@ -97,7 +97,18 @@ module Mongoid
       end
 
       def index_item(obj)
-        client.index({body: obj.as_indexed_json}.merge(options_for(obj)))
+        response = client.index({body: obj.as_indexed_json}.merge(options_for(obj)))
+      end
+
+      ##############################################################
+      ##
+      ##
+      ## ADDED THIS METHOD TO UPDATE A RECORD IN THE DATABASE.
+      ##
+      ##
+      ##############################################################
+      def update_item(obj)
+
       end
 
       def remove_item(obj)
