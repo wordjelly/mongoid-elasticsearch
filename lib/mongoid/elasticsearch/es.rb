@@ -97,6 +97,7 @@ module Mongoid
       end
 
       def index_item(obj)
+        
         response = client.index({body: obj.as_indexed_json}.merge(options_for(obj)))
       end
 

@@ -15,6 +15,7 @@ module Mongoid
           if destroyed? || !es_index?
             self.class.es.remove_item(self)
           else
+           
             self.class.es.index_item(self)
           end
         end

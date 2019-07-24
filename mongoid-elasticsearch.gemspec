@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "mongoid", [">= 3.0", "< 6.0"]
-  spec.add_dependency "elasticsearch", "~> 1.0.13"
+  spec.add_dependency "elasticsearch"
   spec.add_dependency "ruby-progressbar"
   spec.add_dependency 'faraday_middleware'
   spec.add_dependency 'faraday_middleware-aws-sigv4'
@@ -31,6 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "database_cleaner"
   spec.add_development_dependency "coveralls"
   spec.add_development_dependency "hashie"
-  spec.add_development_dependency "mongoid-slug", '~> 5.0.0'
+  spec.add_development_dependency "mongoid-slug"
   spec.add_development_dependency "glebtv-httpclient"
 end
