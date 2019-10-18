@@ -50,8 +50,8 @@ module Mongoid
       def results
         return [] if failure?
         @results ||= begin
-          puts "here are the hits."
-          puts JSON.pretty_generate(hits)
+          #puts "here are the hits."
+          #puts JSON.pretty_generate(hits)
           case @wrapper
           when :load
             if @multi
